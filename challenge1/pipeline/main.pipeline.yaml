@@ -1,0 +1,23 @@
+# Main Pipeline for Deploying Azure infrastructure.
+
+pool:
+  vmImage: ubuntu-latest
+trigger: none   
+parameters:
+  - name: environementName
+    type: array
+    default: [ 'dev', 'test', 'stage', 'prod' ]
+      
+variables:
+  - template: dev.vars.yaml
+stages:
+  - stage: Build
+    jobs: 
+      - template: build.pipeline.yaml
+
+  - stage: Deploy_Azure_Resource    
+    jobs: 
+    - ${{ for env in environementName}}:
+      - template: deploy.pipeline.yaml
+        parameters:
+            variableFile: ${{ env }}.vars.yaml 

@@ -1,0 +1,16 @@
+# Build pipeline to publish Bicep templates
+
+jobs:
+  - job: PublishBicepTemplates
+    displayName: 'Publish Bicep Templates'
+    steps:
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: '$(Build.SourcesDirectory)/challenge1/bicep/resources/'
+          Contents: '**.bicep'
+          targetFolder: '$(Build.ArtifactStagingDirectory)/BicepTemplates'
+      - task: PublishPipelineArtifacts@1
+        displayName: 'Publish Bicep Templates'
+        inputs:
+          targetPath: '$(Build.ArtifactStagingDirectory)/BicepTemplates'
+          artifact: 'Bicep-Templates'

@@ -1,0 +1,10 @@
+variables:
+ azureServiceConnection: 'c0d61419-1775-44c3-9931-1a949dbd633d'
+ azureSubscription: 'c0d61419-0775-43c3-9931-1a949dbd633d'
+ resourceGropuName: 'in-app-demo-kpmgp-rg'
+ location: 'westeurope'
+ tags: {
+   owner: 'demosj',
+   application: 'demo',
+   environmentname: 'prod'
+ }

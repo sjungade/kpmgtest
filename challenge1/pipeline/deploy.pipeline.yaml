@@ -1,0 +1,29 @@
+#Deploy Pipeline to Deploy Azure Resources
+parameters:
+  variableFile: ''
+
+jobs:
+  - job: DeployAzureResources
+    displayName: 'Deploy Azure Resources'
+    dependsOn: PublishBicepTemplates
+    variables: 
+      - template: '${{parameters.variablefile}}'
+    steps:
+      - download: current
+        artifact: 'Bicep-Templates'                     
+      - task: AzurePowerShell@5
+        displayName: 'Create Resource Group'
+        inputs:
+          azureSubscription: "${{ variables.azureSubscription }}"
+          ScriptType: 'InlineScript'
+          Inline: 
+              New-AzResourceGroup -Name ${{ variables.resourceGropuName }} -Location ${{ variables.location }} -Tags ${{ variables.tags }}
+          azurePowerShellVersion: 'LatestVersion'
+      - task: AzurePowerShell@5
+        displayName: 'Deploy Azure resources'
+        inputs:
+          azureSubscription: 'azureSubscription'
+          ScriptType: 'InlineScript'
+          Inline: |
+              New-AzResourceGroupDeployment -ResourceGroupName ${{ variables.resourceGropuName }} -TemplateFile '$(Pipeline.Workspace)/resources/template.main.bicep'
+          azurePowerShellVersion: 'LatestVersion'
